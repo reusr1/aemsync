@@ -8,13 +8,14 @@ const log = require('./log.js')
 
 /** Pushes changes to AEM. */
 class Pipeline {
-  constructor ({targets, interval, packmgrPath, onPushEnd}) {
+  constructor ({targets, interval, packmgrPath, onPushEnd, checkBundles}) {
     this.lock = 0
     this.queue = []
     this.targets = targets
     this.interval = interval || 300
     this.handlers = [new ContentHandler()]
-    this.sender = new Sender({targets, packmgrPath})
+    this.checkBundles = checkBundles || false
+    this.sender = new Sender({targets, packmgrPath, checkBundles})
     this.onPushEnd = onPushEnd || function () {}
   }
 

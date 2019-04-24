@@ -21,6 +21,9 @@ Options:
   -i <sync_interval>      Update interval; default is 300ms
   -u <packmgr_path>       Package manager path; default is
                           /crx/packmgr/service.jsp
+                          use SLING to change the default to
+                          /bin/cpm/package.service.html
+  -c                      check if all bundles are active before install
   -d                      Enable debug mode
   -h                      Displays this screen
 
@@ -60,6 +63,7 @@ function main () {
   const targets = (args.t || 'http://admin:admin@localhost:4502').split(',')
   const interval = args.i || 300
   const exclude = args.e || ''
+  const checkBundles = args.c
   const packmgrPath = args.u
 
   // Just the push.
@@ -69,7 +73,7 @@ function main () {
       return log.info('Invalid path:', chalk.yellow(workingDir))
     }
 
-    return push({pathToPush, targets})
+    return push({pathToPush, targets, checkBundles})
   }
 
   if (!fs.existsSync(workingDir)) {
@@ -84,7 +88,7 @@ function main () {
           Exclude: ${chalk.yellow(exclude)}
   `)
 
-  aemsync({workingDir, targets, interval, exclude, packmgrPath})
+  aemsync({workingDir, targets, interval, exclude, packmgrPath, checkBundles})
 }
 
 if (require.main === module) {
